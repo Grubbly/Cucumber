@@ -1,3 +1,4 @@
+# BACKEND
 class Account
     def initialize()
     end
@@ -49,3 +50,32 @@ module Bank
     end
 end
 World(Bank)
+
+# WEB FRONTEND
+require 'sinatra'
+get '/' do
+    %{
+        <html>
+            <body>
+                <form action="/withdraw" method="post">
+                    <label for="amount">Amount</label>
+                    <input type="text" id="amount" name="amount">
+                    <button type="submit">Withdraw</button>
+                </form>
+            </body>
+        </html>
+    }
+end
+
+post '/withdraw' do
+    fail "Withdraw is not implemented yet :D"
+end
+
+set :cash_slot, CashSlot.new
+set :account do
+    fail 'Account not set'
+end
+post '/withdraw' do
+    teller = Teller.new(settings.cash_slot)
+    fail "Withdraw is not implemented yet :D"
+end

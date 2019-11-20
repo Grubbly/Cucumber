@@ -297,3 +297,6 @@ cash_withdrawal.feature
 # Step 4:
 And the balance of my account should be $80
 ```
+
+Note: Toggle between Bank and Bank2 for backend and web in bank.rb and world_extensions.rb
+
