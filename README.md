@@ -95,14 +95,14 @@ Given(/^I have deposited \$(\d+) in my account$/) do |amount|
 end
 ```
 
-9. Create a 'world' AKA environment for our tests to run
+9. Create a 'world' AKA environment for our tests to run that defines global objects used by steps
 ``` ruby
-module KnowsMyAccount
+module Bank
     def account
         @account ||= Account.new
     end
 end
-World(KnowsMyAccount)
+World(Bank)
 ```
 
 10. Implement When
@@ -118,4 +118,132 @@ When(/^I request \$(\d+)$/) do |amount|
     # expect(@account.balance).to eq(newBalance),
     #     "Expected account balance to be #{newBalance} but it was #{@account.balance}"
 end
+```
+11. Emulate an ATM and add it to the world
+``` ruby
+class Teller
+    def initialize(cash_slot)
+        @cash_slot = cash_slot
+    end
+    def withdraw_from(account, amount)
+        @cash_slot.dispense(amount)
+    end
+end
+
+class CashSlot
+    def contents
+        @contents or raise("I'm empty")
+    end
+
+    def dispense(amount)
+        @contents = amount
+    end
+end
+
+module Bank
+    def account
+        @account ||= Account.new
+    end
+
+    def cash_slot
+        @cash_slot ||= CashSlot.new
+    end
+
+    def teller
+        @teller ||= Teller.new(cash_slot)
+    end
+end
+World(Bank)
+```
+12. Change When and Then to reflect new world changes - Everything passes but there's a bug in When that doesn't subtract money from account.
+``` ruby
+When(/^I request \$(\d+)$/) do |amount|
+    teller.withdraw_from(account, amount)
+    # expect(@account.balance).to eq(newBalance),
+    #     "Expected account balance to be #{newBalance} but it was #{@account.balance}"
+end
+  
+Then(/^\$(\d+) should be dispensed$/) do |amount|
+    expect(cash_slot.contents).to eq(amount)
+end
+```
+
+13. Move implementation and tests into different files
+
+features/support/env.rb
+``` ruby
+require 'bank'
+```
+
+lib/bank.rb
+``` ruby
+class Account
+    def initialize()
+    end
+
+    def deposit(amount)
+        @balance = amount
+    end
+
+    def balance()
+        return @balance
+    end
+end
+
+class Teller
+    def initialize(cash_slot)
+        @cash_slot = cash_slot
+    end
+    def withdraw_from(account, amount)
+        @cash_slot.dispense(amount)
+    end
+end
+
+class CashSlot
+    def contents
+        @contents or raise("I'm empty")
+    end
+
+    def dispense(amount)
+        @contents = amount
+    end
+end
+
+module Bank
+    def account
+        @account ||= Account.new
+    end
+
+    def cash_slot
+        @cash_slot ||= CashSlot.new
+    end
+
+    def teller
+        @teller ||= Teller.new(cash_slot)
+    end
+end
+World(Bank)
+```
+
+features/cash_withdrawal.feature
+``` ruby
+# Feature - A specific functionality of our application
+    # Description - What is the context behind the test?
+Feature: Cash Withdrawal
+
+    Customer walks to ATM to get cash from their account.
+
+    # Scenario - What are we testing?
+    Scenario: Successful withdrawal from an account in credit
+        # Step 1:
+        Given I have deposited $100 in my account
+        # Step 2:
+        When I request $20
+        # Step 3:
+        Then $20 should be dispensed
+```
+14. Fix the withdrawal bug
+
+```
+
 ```

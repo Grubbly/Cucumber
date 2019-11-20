@@ -12,3 +12,5 @@ Feature: Cash Withdrawal
         When I request $20
         # Step 3:
         Then $20 should be dispensed
+        # Step 4:
+        Then the balance of my account should be $80

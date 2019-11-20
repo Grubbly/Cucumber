@@ -1,27 +1,4 @@
-class Account
-    def initialize()
-    end
-
-    def deposit(amount)
-        @balance = amount
-    end
-
-    def balance()
-        return @balance
-    end
-end
-
-class Teller
-    def withdraw_from(account, amount)
-    end
-end
-
-module KnowsMyAccount
-    def account
-        @account ||= Account.new
-    end
-end
-World(KnowsMyAccount)
+require 'bank'
 
 Given(/^I have deposited \$(\d+) in my account$/) do |amount|
     # Deposit money into an account
@@ -34,12 +11,14 @@ Given(/^I have deposited \$(\d+) in my account$/) do |amount|
 end
   
 When(/^I request \$(\d+)$/) do |amount|
-    teller = Teller.new
-    teller.withdraw_from(account, amount)
-    # expect(@account.balance).to eq(newBalance),
-    #     "Expected account balance to be #{newBalance} but it was #{@account.balance}"
+    teller.withdraw_from(account, amount.to_i)
 end
   
-Then("${int} should be dispensed") do |int|
-    pending # Write code here that turns the phrase above into concrete actions
+Then(/^\$(\d+) should be dispensed$/) do |amount|
+    expect(cash_slot.contents).to eq(amount.to_i)
+end
+
+Then(/^the balance of my account should be \$(\d+)$/) do |amount|
+    expect(account.balance).to eq(amount.to_i),
+        "Expected account balance to be #{amount.to_i} but it was #{acount.balance}"
 end
