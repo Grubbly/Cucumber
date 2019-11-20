@@ -242,8 +242,58 @@ Feature: Cash Withdrawal
         # Step 3:
         Then $20 should be dispensed
 ```
-14. Fix the withdrawal bug
+14. Fix the withdrawal bug by adding another then step
 
+bank.rb
+``` ruby
+class Account
+    def initialize()
+    end
+
+    def deposit(amount)
+        @balance = amount
+    end
+
+    def balance
+        @balance
+    end
+
+    def withdraw(amount)
+        @balance -= amount
+    end
+end
+
+class Teller
+    def initialize(cash_slot)
+        @cash_slot = cash_slot
+    end
+    def withdraw_from(account, amount)
+        account.withdraw(amount)
+        @cash_slot.dispense(amount)
+    end
+end
 ```
 
+steps.rb
+``` ruby
+Then(/^the balance of my account should be \$(\d+)$/) do |amount|
+    expect(account.balance).to eq(amount.to_i),
+        "Expected account balance to be #{amount.to_i} but it was #{account.balance}"
+end
+```
+
+15. Reword the step
+
+steps.rb
+``` ruby
+And(/^the balance of my account should be \$(\d+)$/) do |amount|
+    expect(account.balance).to eq(amount.to_i),
+        "Expected account balance to be #{amount.to_i} but it was #{account.balance}"
+end
+```
+
+cash_withdrawal.feature
+``` ruby
+# Step 4:
+And the balance of my account should be $80
 ```

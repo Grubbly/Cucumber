@@ -13,4 +13,4 @@ Feature: Cash Withdrawal
         # Step 3:
         Then $20 should be dispensed
         # Step 4:
-        Then the balance of my account should be $80
+        And the balance of my account should be $80

@@ -18,7 +18,7 @@ Then(/^\$(\d+) should be dispensed$/) do |amount|
     expect(cash_slot.contents).to eq(amount.to_i)
 end
 
-Then(/^the balance of my account should be \$(\d+)$/) do |amount|
+And(/^the balance of my account should be \$(\d+)$/) do |amount|
     expect(account.balance).to eq(amount.to_i),
-        "Expected account balance to be #{amount.to_i} but it was #{acount.balance}"
+        "Expected account balance to be #{amount.to_i} but it was #{account.balance}"
 end

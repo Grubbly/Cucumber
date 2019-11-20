@@ -6,8 +6,12 @@ class Account
         @balance = amount
     end
 
-    def balance()
-        return @balance
+    def balance
+        @balance
+    end
+
+    def withdraw(amount)
+        @balance -= amount
     end
 end
 
@@ -16,6 +20,7 @@ class Teller
         @cash_slot = cash_slot
     end
     def withdraw_from(account, amount)
+        account.withdraw(amount)
         @cash_slot.dispense(amount)
     end
 end
