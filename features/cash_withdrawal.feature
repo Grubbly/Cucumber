@@ -5,7 +5,7 @@ Feature: Cash Withdrawal
     Customer walks to ATM to get cash from their account.
 
     # Scenario - What are we testing?
-    Scenario: Successful withdrawal from an account in credit
+    Scenario: Successful withdrawal from an account
         # Step 1:
         Given I have deposited $100 in my account
         # Step 2:
