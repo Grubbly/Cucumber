@@ -1,0 +1,1 @@
+100s of floating point registers is to support out of order execution in large llops (parallelization)
